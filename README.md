@@ -6,7 +6,23 @@ Backbone-Chaining extends [Backbone](http://backbonejs.org) Models' `set()` and 
 
 Backbone-Chaining was inspired by [Backbone-Relational](http://backbonerelational.org)'s `dotNotation` option and [Backbone-Associations](http://dhruvaray.github.io/backbone-associations/)' similar 'fully qualified paths' -- and was very specifically inspired by [Backbone-Associations](http://dhruvaray.github.io/backbone-Associations/)' introduction of fully-qualified event paths.  Backbone-Chaining however is agnostic as to whether you use either of those libraries or a different library, or none at all.
 
-## Documentation
+## Summary
+
+Backbone-Chaining provides:
+
+* Chained Get:
+
+         model.get('other.things[2].widget')
+
+* Chained Set:
+
+         model.set('other.things[2].widget.color', "red")
+
+* Chained Events:
+
+         model.on('change:color@other.things[2].widget', callback)
+
+## Details
 
 ### Chained Get
 
@@ -69,7 +85,7 @@ Chained event handling essentially provides a shorthand:
     // shorthand for
     comment.get("author.posts[0].date").on("eventName", callback)
 
-(Of course in practice you'd generally use `listenTo` rather than `on`, but `on` is clearer to write.) You can remove a chained event as usual using `off` (or `stopListening`).  Also, `once` (`listenToOnce`) work as expected.
+Of course in practice you'd generally use `listenTo` rather than `on`. You can remove a chained event as usual using `off` or `stopListening`.  Also, `once` and `listenToOnce` work as expected.
 
 #### Dynamic binding
 
@@ -77,7 +93,7 @@ The key difference between chained event handling and the long form is that the 
 
     nest = new Backbone.Model();			           // create an empty nest
     nest.on("chirp@bird.children[#]", function () {    // set up event for the future
-      alert("youngest bird chirped!")
+      alert("youngest baby bird chirped!")
     });
 
     robin = new Backbone.Model({name: "Mrs Robin"});    // create a bird...
@@ -99,11 +115,21 @@ The key difference between chained event handling and the long form is that the 
 
 As usual, `*` applies to all models in a collection.  E.g.
 
-    nest.on("chirp@bird.children[*]", function () { alert "any bird chirped" });
+    nest.on("flap@bird.children[*].wings", function () { alert "a baby bird flapped its wings" });
+    
 
 #### Collections
 
-If listening to a collection, the given event is effectively passed through from any model in the collection, as is usual for collections. e.g.
+If the object at the end of a chain is a collection, you can of course listen to the collection's events:
+
+    nest.on("add@bird.children", function () { alert "the bird has a new baby" });
+
+Because collections automatically pass along any trigger from a member, these are equivalent:
+
+    nest.on("chirp@bird.children", function () { alert "a baby bird chirped" });
+    nest.on("chirp@bird.children[*]", function () { alert "a baby bird chirped" });
+
+If listening directly to a collection, the given chained event is likewise effectively passed through from any model in the collection. e.g.
 
     birds = new Backbone.Collection([robin, sparow]);
     birds.on("chirp@children[#]", ...); // listens for the youngest child of any bird in the collection
@@ -112,8 +138,8 @@ So in the case of a model with an attribute whose value is a collection, we have
 
     aviary = new Backbone.Model;
     aviary.set('birds', new Backbone.Collection);
-    aviary.get('birds').on('event@path.to.object');   // this is equivalent...
-    aviary.on('event@birds[*].path.to.object', ...);  // ...to this
+    aviary.get('birds').on('event@path.to.object', ...);   // this is equivalent...
+    aviary.on('event@birds[*].path.to.object', ...);       // ...to this
 
 
 ## Installation and Use
