@@ -190,3 +190,7 @@ Backbone-Chaining avoids that ambiguity, by using `"@"` to separate the name of 
 ## Contributing
 
 Suggestions welcome, especially PR's with tests :)
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/ronen/backbone-chaining/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
