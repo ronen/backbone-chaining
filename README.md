@@ -1,6 +1,6 @@
 # Backbone-chaining
 
-[![Build Status](https://travis-ci.org/ronen/backbone-chaining.png?branch=master)](https://travis-ci.org/ronen/backbone-chaining)
+[![GitHub version](https://badge.fury.io/gh/ronen%2Fbackbone-chaining.png)](http://badge.fury.io/gh/ronen%2Fbackbone-chaining) [![Build Status](https://travis-ci.org/ronen/backbone-chaining.png?branch=master)](https://travis-ci.org/ronen/backbone-chaining)
 
 Backbone-chaining extends [Backbone](http://backbonejs.org) Models' `set()` and `get()` methods and event handling to be able to act across attribute chains such as "post.comments[0].author"
 
