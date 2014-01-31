@@ -133,7 +133,7 @@ Why would you want to use Backbone-chaining, since Backbone-Associations support
 
 * Backbone-Associations implements the chained events through "event bubbling", in which every change gets propagated across relations and bubbles through the object graph triggering on the related models.  If you have a large interconnected graph, bubbling can get very slow.  Backbone-chaining works by targeted event proxying, so you only "pay" for event chains that you're listening to.
 
-* Backbone-Associations event chains only apply to the builtin events, whereas Backbone-chaining works with any custom events.
+* Backbone-Associations event chains only apply to the builtin events, whereas Backbone-chaining works with any events, builtin or cusomt.
 
 Conversely, Backbone-Associations provides a ["nested-chain" event](http://dhruvaray.github.io/backbone-associations/events.html#e-catalogue) that gets propogated through the object graph; Backbone-chaining does not support this.  If you need "nested-chain", stick with Backbone-Associations' chaining.
 
@@ -181,7 +181,7 @@ Backbone-chaining works fine with Backbone-Relational.  Usage notes:
 
 Given that Backbone, Backbone-Relational, and Backbone-Associations all use `":"` in events of the form `"name:target"`, why doesn't Backbone-Chaining do the same?
 
-The reason is that given the prevalence in common practice of using `":"` as a way of subclassing or namespacing events, parsing an event string to identify the "name" vs the "target" is open to ambiguity unless you have special knowledge of event meanings.  I.e. `"relational:add"`, an event used internally in Backbone-Relational, should not be parsed as the event "relational" triggered by an object that's the value of the "add" attribute, while `"chirp:bird"` should be parsed that way.  Even `"change:thing"` as supported by Backbone, Backbone-Relational and Backbone-Associations has a different meaning--and different callback parameters--based on whether "thing" is an ordinary attribute vs. a relation key.
+The reason is that given the prevalence in common practice of using `":"` as a way of subclassing or namespacing events, parsing an event string to identify the "name" vs the "target" is open to ambiguity unless you have special knowledge of event meanings.  I.e. `"relational:add"`, an event used internally in Backbone-Relational, should not be parsed as the event "relational" triggered by an object that's the value of the "add" attribute, while `"chirp:bird"` if the above example would need to be parsed that way.  Even `"change:thing"` as supported by Backbone, Backbone-Relational and Backbone-Associations has a different meaning--and different callback parameters--based on whether "thing" is an ordinary attribute vs. a relation key.
 
 Backbone-Chaining avoids that ambiguity, by using `"@"` to separate the name of the event from the path to reach it.  Backbone-Chaining unambiguously allows `":"` as part of the event name, e.g.
 
