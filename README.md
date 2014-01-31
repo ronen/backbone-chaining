@@ -4,7 +4,7 @@
 
 Backbone-chaining extends [Backbone](http://backbonejs.org) Models' `set()` and `get()` methods and event handling to be able to act across attribute chains such as "post.comments[0].author"
 
-Backbone-chaining was inspired by [Backbone-Relational](http://backbonerelational.org)'s `dotNotation` option and [Backbone-Associations](http://dhruvaray.github.io/backbone-Associations/)' similar 'fully qualified paths' -- and was very specifically inspired by [Backbone-Associations](http://dhruvaray.github.io/backbone-Associations/)' introduction of fully-qualified event paths.  Backbone-chaining however is agnostic as to whether you use either of those libraries or a different library, or none at all.
+Backbone-chaining was inspired by [Backbone-Relational](http://backbonerelational.org)'s `dotNotation` option and [Backbone-Associations](http://dhruvaray.github.io/backbone-associations/)' similar 'fully qualified paths' -- and was very specifically inspired by [Backbone-Associations](http://dhruvaray.github.io/backbone-Associations/)' introduction of fully-qualified event paths.  Backbone-chaining however is agnostic as to whether you use either of those libraries or a different library, or none at all.
 
 ## Documentation
 
@@ -127,7 +127,7 @@ Backbone-chaining.js should therefore be included *after* backbone.js.  It will 
     //= require backbone-chaining
 
 
-### Using with [Backbone-Associations](http://dhruvaray.github.io/backbone-Associations/):
+### Using with [Backbone-Associations](http://dhruvaray.github.io/backbone-associations/):
 
 Why would you want to use Backbone-chaining, since Backbone-Associations supports similar behavior?  Two possible reasons:
 
@@ -135,7 +135,7 @@ Why would you want to use Backbone-chaining, since Backbone-Associations support
 
 * Backbone-Associations event chains only apply to the builtin events, whereas Backbone-chaining works with any custom events.
 
-Conversely, Backbone-Associations provides a ["nested-chain" event](http://dhruvaray.github.io/backbone-Associations/events.html#e-catalogue) that gets propogated through the object graph; Backbone-chaining does not support this.  If you need "nested-chain", stick with Backbone-Associations' chaining.
+Conversely, Backbone-Associations provides a ["nested-chain" event](http://dhruvaray.github.io/backbone-associations/events.html#e-catalogue) that gets propogated through the object graph; Backbone-chaining does not support this.  If you need "nested-chain", stick with Backbone-Associations' chaining.
 
 Usage notes:
 
