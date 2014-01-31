@@ -132,7 +132,7 @@ Why would you want to use Backbone-Chaining, since Backbone-Associations support
 
 * Backbone-Associations implements the chained events through "event bubbling", in which every change gets propagated across relations and bubbles through the object graph triggering on the related models.  If you have a large interconnected graph, bubbling can get very slow.  Backbone-Chaining works by targeted event proxying, so you only "pay" for event chains that you're listening to.
 
-* Backbone-Associations event chains only apply to the builtin events, whereas Backbone-Chaining works with any events, builtin or cusomt.
+* Backbone-Associations event chains only apply to the builtin events, whereas Backbone-Chaining works with any events, builtin or custom.
 
 Conversely, Backbone-Associations provides a ["nested-chain" event](http://dhruvaray.github.io/backbone-associations/events.html#e-catalogue) that gets propogated through the object graph; Backbone-Chaining does not support this.  If you need "nested-chain", stick with Backbone-Associations' chaining.
 
