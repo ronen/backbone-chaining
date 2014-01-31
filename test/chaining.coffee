@@ -295,3 +295,61 @@ $(document).ready ->
         models.c.trigger "sample", "no"
         newHead.trigger "sample", "no"
         newTail.trigger "sample", "yes"
+
+    test "remove chain -- event name", 3, ->
+        cb = (expected) -> equal expected, 'yes'
+        models.a.on "event1@chain", cb
+        models.a.on "event2@chain", cb
+
+        models.b.trigger "event1", "yes"
+        models.b.trigger "event2", "yes"
+
+        models.a.off "event1@chain"
+
+        models.b.trigger "event1", "no"
+        models.b.trigger "event2", "yes"
+
+    test "remove chain -- attr", 3, ->
+        cb = (expected) -> equal expected, 'yes'
+        models.a.on "sample@chain", cb
+        models.a.on "sample@coll", cb
+
+        models.b.trigger "sample",      "yes"
+        collections.p.trigger "sample", "yes"
+
+        models.a.off "sample@chain"
+
+        models.b.trigger "sample",      "no"
+        collections.p.trigger "sample", "yes"
+
+    test "remove chain -- callback", 3, ->
+        cb1 = (expected) -> ok(true)
+
+        cb2ok = true
+        cb2 = (expected) -> ok(cb2ok)
+
+        models.a.on "sample@chain", cb1
+        models.a.on "sample@chain", cb2
+
+        models.b.trigger "sample" # both callbacks
+
+        models.a.off null, cb2
+        cb2ok = false
+
+        models.b.trigger "sample" # only cb1
+
+    test "remove chain -- context", 3, ->
+        ctx1 = { ok: true }
+        ctx2 = { ok: true}
+
+        cb = -> ok @ok
+
+        models.a.on "sample@chain", cb, ctx1
+        models.a.on "sample@chain", cb, ctx2
+
+        models.b.trigger "sample" # both callbacks
+
+        models.a.off null, null, ctx2
+        ctx2.ok = false
+
+        models.b.trigger "sample" # only ctx1 callback

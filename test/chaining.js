@@ -393,7 +393,7 @@
       }));
       return sub2.trigger("sample");
     });
-    return test("update event chain -- change root", 2, function() {
+    test("update event chain -- change root", 2, function() {
       var newHead, newTail;
       newTail = new Backbone.Model({
         name: "newTail"
@@ -414,6 +414,66 @@
       models.c.trigger("sample", "no");
       newHead.trigger("sample", "no");
       return newTail.trigger("sample", "yes");
+    });
+    test("remove chain -- event name", 3, function() {
+      var cb;
+      cb = function(expected) {
+        return equal(expected, 'yes');
+      };
+      models.a.on("event1@chain", cb);
+      models.a.on("event2@chain", cb);
+      models.b.trigger("event1", "yes");
+      models.b.trigger("event2", "yes");
+      models.a.off("event1@chain");
+      models.b.trigger("event1", "no");
+      return models.b.trigger("event2", "yes");
+    });
+    test("remove chain -- attr", 3, function() {
+      var cb;
+      cb = function(expected) {
+        return equal(expected, 'yes');
+      };
+      models.a.on("sample@chain", cb);
+      models.a.on("sample@coll", cb);
+      models.b.trigger("sample", "yes");
+      collections.p.trigger("sample", "yes");
+      models.a.off("sample@chain");
+      models.b.trigger("sample", "no");
+      return collections.p.trigger("sample", "yes");
+    });
+    test("remove chain -- callback", 3, function() {
+      var cb1, cb2, cb2ok;
+      cb1 = function(expected) {
+        return ok(true);
+      };
+      cb2ok = true;
+      cb2 = function(expected) {
+        return ok(cb2ok);
+      };
+      models.a.on("sample@chain", cb1);
+      models.a.on("sample@chain", cb2);
+      models.b.trigger("sample");
+      models.a.off(null, cb2);
+      cb2ok = false;
+      return models.b.trigger("sample");
+    });
+    return test("remove chain -- context", 3, function() {
+      var cb, ctx1, ctx2;
+      ctx1 = {
+        ok: true
+      };
+      ctx2 = {
+        ok: true
+      };
+      cb = function() {
+        return ok(this.ok);
+      };
+      models.a.on("sample@chain", cb, ctx1);
+      models.a.on("sample@chain", cb, ctx2);
+      models.b.trigger("sample");
+      models.a.off(null, null, ctx2);
+      ctx2.ok = false;
+      return models.b.trigger("sample");
     });
   });
 

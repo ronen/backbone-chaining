@@ -142,6 +142,7 @@ Chaining = Backbone.Chaining =
             if _.isString(name) && name.search(/\s/) == -1 && event = Chaining.parseEvent(name)
                 @_eventChainProxies ?= []
                 @_eventChainProxies.push new Chaining.EventChainProxy(@, event.name, event.attr, callback, context)
+                return
 
             @_primitiveOn(arguments...)
 
@@ -152,6 +153,7 @@ Chaining = Backbone.Chaining =
                         eventChain.close()
                         true
                 delete @_eventChainProxies if @_eventChainProxies.length == 0
+                return if name
 
             @_primitiveOff(arguments...)
 

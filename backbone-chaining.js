@@ -200,6 +200,7 @@ http://github.com/ronen/backbone-chaining
             this._eventChainProxies = [];
           }
           this._eventChainProxies.push(new Chaining.EventChainProxy(this, event.name, event.attr, callback, context));
+          return;
         }
         return this._primitiveOn.apply(this, arguments);
       },
@@ -215,6 +216,9 @@ http://github.com/ronen/backbone-chaining
           });
           if (this._eventChainProxies.length === 0) {
             delete this._eventChainProxies;
+          }
+          if (name) {
+            return;
           }
         }
         return this._primitiveOff.apply(this, arguments);
