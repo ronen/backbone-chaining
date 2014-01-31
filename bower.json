@@ -1,0 +1,8 @@
+{
+    "name":"backbone-chaining",
+    "version": "0.1.0",
+    "main":"./backbone-chaining.js",
+    "dependencies":{
+        "backbone":"~1.1.0",
+    }
+}
