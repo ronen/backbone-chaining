@@ -152,26 +152,6 @@ Backbone-chaining.js should therefore be included *after* backbone.js.  It will 
     //= require backbone-chaining
 
 
-### Using with [Backbone-Associations](http://dhruvaray.github.io/backbone-associations/):
-
-Why would you want to use Backbone-Chaining, since Backbone-Associations supports similar behavior?  Maybe you prefer Backbone-Chaining's syntax.  (See discussion of @ vs : below)
-
-Note though that, Backbone-Associations provides a ["nested-chain" event](http://dhruvaray.github.io/backbone-associations/events.html#e-catalogue) that gets propogated through the object graph; Backbone-Chaining does not support this.  If you need "nested-chain", stick with Backbone-Associations' chaining.
-
-Usage notes:
-
-* Order of inclusion is (e.g. Sprockets):
-
-        //= require backbone
-        //= require backbone-chaining
-        //= require backbone-Associations
-
-* In some convenient configuration file, disable Backbone-Associations event bubbling if you don't want it:
-
-        Backbone.Associations.EVENTS_BUBBLE = false; // this is optional, you *could* keep both
-
-* Backbone-Associations provides chained `get()` and `set()` which can't be disabled; so its chaining mechanism will be applied and Backbone-Chaining's mechanism will not come into play.  One difference is that Backbone-Associations' `set()` always behaves like Backbone-Chaining's `set()` with the `ifExists: true` option set.
-
 ### Using with [Backbone-Relational](http://backbonerelational.org)
 
 Backbone-Chaining works fine with Backbone-Relational.  Usage notes:
@@ -196,6 +176,26 @@ Backbone-Chaining works fine with Backbone-Relational.  Usage notes:
 
         model.on("change:key", ...) // these are equivalent except for the callback arguments
         model.on("change@key", ...) //
+
+### Using with [Backbone-Associations](http://dhruvaray.github.io/backbone-associations/):
+
+Why would you want to use Backbone-Chaining, since Backbone-Associations supports similar behavior?  Maybe you prefer Backbone-Chaining's syntax (see discussion of @ vs : below), or philosophically you like SoC.  
+
+Note though that Backbone-Associations provides a ["nested-chain" event](http://dhruvaray.github.io/backbone-associations/events.html#e-catalogue) that gets propogated through the object graph; Backbone-Chaining does not support this.  If you need "nested-chain", stick with Backbone-Associations' chaining.
+
+Usage notes:
+
+* Order of inclusion is (e.g. Sprockets):
+
+        //= require backbone
+        //= require backbone-chaining
+        //= require backbone-Associations
+
+* In some convenient configuration file, disable Backbone-Associations event bubbling if you don't want it:
+
+        Backbone.Associations.EVENTS_BUBBLE = false; // this is optional, you *could* keep both
+
+* Backbone-Associations provides chained `get()` and `set()` which can't be disabled; so its chaining mechanism will be applied and Backbone-Chaining's mechanism will not come into play.  One difference is that Backbone-Associations' `set()` always behaves like Backbone-Chaining's `set()` with the `ifExists: true` option set.
 
 
 ## On @ vs :
