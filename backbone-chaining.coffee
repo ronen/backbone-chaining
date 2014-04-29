@@ -1,5 +1,5 @@
 ###
-backbone-chaining 0.1.1
+backbone-chaining 0.1.2
 http://github.com/ronen/backbone-chaining
 ###
 

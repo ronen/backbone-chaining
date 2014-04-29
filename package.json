@@ -28,7 +28,7 @@
         "test":"phantomjs test/lib/runner.js test/test-suite.html?noglobals=true"
     },
     "main":"backbone-chaining.js",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "repository":"git://github.com/ronen/backbone-chaining.git",
     "licenses":[
         {
