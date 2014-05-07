@@ -1,3 +1,10 @@
+# Backbone-Chaining
+## Change Log
+
+### 0.1.3
+
+* Bug fix: don't die on get with null attribute
+
 ### 0.1.2
 
 * Bower registration
