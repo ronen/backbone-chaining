@@ -33,8 +33,8 @@ http://github.com/ronen/backbone-chaining
     pattern: /[\.\[\]]/,
     parseChain: function(attr, options) {
       var head, i, index, sep, tail;
-      i = attr.search(Chaining.pattern);
-      if (i === -1) {
+      i = attr != null ? attr.search(Chaining.pattern) : void 0;
+      if (!(i >= 0)) {
         return null;
       }
       options = _.extend({

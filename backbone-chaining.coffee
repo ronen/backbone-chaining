@@ -26,8 +26,8 @@ Chaining = Backbone.Chaining =
              ///
 
     parseChain: (attr, options) ->
-        i = attr.search Chaining.pattern
-        return null if i == -1
+        i = attr?.search Chaining.pattern
+        return null unless i >= 0
 
         options = _.extend({throw: true}, options ? {})
         if options.trailing

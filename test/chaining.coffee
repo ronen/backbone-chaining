@@ -44,6 +44,9 @@ $(document).ready ->
             models.item1.set 'sub', models.sub1
             models.a.set 'coll', collections.p
 
+    test "get with null attribute", ->
+        equal models.a.get(null), null
+
     test "get without chain", 1, ->
         equal models.a.get('name'), 'a'
 
