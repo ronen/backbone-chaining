@@ -98,7 +98,7 @@ The key difference between chained event handling and the long form is that the 
 
     robin = new Backbone.Model({name: "Mrs Robin"});    // create a bird...
 	robin.set('children', new Backbone.Collection);
-    jack = mother.get('children').add(new Backbone.Model({name: "Jack}")); // ...with one child
+    jack = robin.get('children').add(new Backbone.Model({name: "Jack}")); // ...with one child
 
 	jack.trigger("chirp"); // => does not alert; robin is not in the nest
 
