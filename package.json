@@ -25,7 +25,9 @@
         ]
     },
     "scripts":{
-        "test":"phantomjs test/lib/runner.js test/test-suite.html?noglobals=true"
+        "test": "npm run test-underscore && npm run test-lodash",
+        "test-underscore":"phantomjs test/lib/runner.js test/test-suite-underscore.html?noglobals=true",
+        "test-lodash":"phantomjs test/lib/runner.js test/test-suite-lodash.html?noglobals=true"
     },
     "main":"backbone-chaining.js",
     "version": "0.1.3",
