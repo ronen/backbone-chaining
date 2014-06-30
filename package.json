@@ -14,6 +14,7 @@
         "lodash":">=2.4.1",
         "phantomjs":">=1.9.0",
         "qunitjs":"=1.11.0",
+        "requirejs":">=2.1.14",
         "underscore":">=1.6.0"
     },
     "jam":{
@@ -29,9 +30,11 @@
         ]
     },
     "scripts":{
-        "test": "npm run test-underscore && npm run test-lodash",
-        "test-underscore":"phantomjs test/lib/runner.js test/test-suite-underscore.html?noglobals=true",
-        "test-lodash":"phantomjs test/lib/runner.js test/test-suite-lodash.html?noglobals=true"
+        "test": "npm run test-underscore && npm run test-lodash && npm run test-requirejs && npm run test-commonjs",
+        "test-underscore":"phantomjs test/lib/runner-qunit.js test/test-suite-underscore.html?noglobals=true",
+        "test-lodash":"phantomjs test/lib/runner-qunit.js test/test-suite-lodash.html?noglobals=true",
+        "test-requirejs":"phantomjs test/lib/runner-plain.js test/test-sanity-requirejs.html",
+        "test-commonjs":"phantomjs test/test-sanity-commonjs.js"
     },
     "main":"backbone-chaining.js",
     "version": "0.1.3",

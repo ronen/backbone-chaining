@@ -144,12 +144,14 @@ So in the case of a model with an attribute whose value is a collection, we have
 
 ## Installation and Use
 
-Backbone-Chaining doesn't create any new classes to derive from, and doesn't need any explicit initialization; when the file is loaded it wraps extra behavior around `Backbone.Model` and `Backbone.Collection` prototype methods.  Just include the file and you're all set.
+Backbone-chaining doesn't create any new classes to derive from, and doesn't need any explicit initialization; when the file is loaded it wraps extra behavior around `Backbone.Model` and `Backbone.Collection` prototype methods.  Just include the file and you're all set.
 
-Backbone-chaining.js should therefore be included *after* backbone.js.  It will throw a friendly error message if Backbone isn't already defined. E.g. in Sprockets:
+Backbone-chaining can be loaded using CommonJS or RequireJS, or by explicitly loading the file.  In the latter case, backbone-chaining.js should be included *after* backbone.js.  It will throw a friendly error message if Backbone isn't already defined. E.g. in Sprockets:
 
     //= require backbone
     //= require backbone-chaining
+
+Backbone-chaining works with both Underscore and LoDash.
 
 
 ### Using with [Backbone-Relational](http://backbonerelational.org)
@@ -212,6 +214,11 @@ Backbone-Chaining avoids that ambiguity, by using `@` to separate the name of th
 
 Suggestions welcome, especially PR's with tests :)
 
+The test rig runs the full test suite for Underscore and LoDash, and does quick sanity checks that backbone-chaining properly loads under RequireJS and CommonJS.  To run the tests:
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/ronen/backbone-chaining/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
+    $ npm install
+    $ npm test     # => runs all 4 tests.  or you can run them individually...
+    $ npm run test-underscore 
+    $ npm run test-lodash
+    $ npm run test-requirejs
+    $ npm run test-commonjs

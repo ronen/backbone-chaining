@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Backbone-chaining Test Suite - RequireJS</title>
+
+    <link rel="stylesheet" href="../node_modules/qunitjs/qunit/qunit.css" type="text/css" media="screen"/>
+    <script src="../node_modules/qunitjs/qunit/qunit.js"></script>
+    <script src="../node_modules/requirejs/require.js"></script>
+    <script>
+require.config({
+    paths: {
+        'backbone': '../node_modules/backbone/backbone-min',
+        'backbone-chaining': '../backbone-chaining',
+        'jquery': '../node_modules/jquery/dist/jquery.min',
+        'underscore': '../node_modules/underscore/underscore-min'
+    }
+});
+
+// require the unit tests.
+require(['backbone-chaining'], function() {
+    if (typeof $ === "undefined") { console.log("Error: jQuery not defined") }
+    if (typeof _ === "undefined") { console.log("Error: Underscore/LoDash not defined") }
+    if (typeof Backbone === "undefined") { console.log("Error: Backbone not defined") }
+    if (typeof Backbone.Chaining === "undefined") { console.log("Error: Backbone.Chaining not defined") }
+    console.log("Backbone.Chaining and dependencies loaded OK");
+    console.log("Done");
+});
+    </script>
+
+</head>
+<body>
+</body>
+</html>
