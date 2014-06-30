@@ -10,7 +10,7 @@
         "backbone":">=1.0.0"
     },
     "devDependencies":{
-        "phantomjs":"0.2.2"
+        "phantomjs":">=1.9.0"
     },
     "jam":{
         "dependencies":{
