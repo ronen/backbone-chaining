@@ -10,7 +10,11 @@
         "backbone":">=1.0.0"
     },
     "devDependencies":{
-        "phantomjs":">=1.9.0"
+        "jquery":"<2.0.0",
+        "lodash":">=2.4.1",
+        "phantomjs":">=1.9.0",
+        "qunitjs":"=1.11.0",
+        "underscore":">=1.6.0"
     },
     "jam":{
         "dependencies":{
