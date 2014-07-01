@@ -12,7 +12,7 @@ http://github.com/ronen/backbone-chaining
     if (typeof define === "function" && define.amd) {
       define(["underscore", "backbone"], factory);
     } else if (typeof exports === "object") {
-      factory(require("underscore"), require("backbone"));
+      module.exports = factory(require("underscore"), require("backbone"));
     } else {
       if (!((window.Backbone != null) && (Backbone.Model != null) && (Backbone.Events != null))) {
         throw "Backbone must be loaded before backbone-chaining";
@@ -29,7 +29,8 @@ http://github.com/ronen/backbone-chaining
         return function() {
           _.extend(Backbone.Model.prototype, Chaining.Model);
           _.extend(Backbone.Model.prototype, Chaining.Events);
-          return _.extend(Backbone.Collection.prototype, Chaining.Events);
+          _.extend(Backbone.Collection.prototype, Chaining.Events);
+          return Chaining;
         };
       })(this),
       throwMalformed: (function(_this) {

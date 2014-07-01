@@ -12,7 +12,7 @@ http://github.com/ronen/backbone-chaining
     ], factory
   else if typeof exports is "object"
     # Next for Node.js, CommonJS, browserify...
-    factory require("underscore"), require("backbone")
+    module.exports = factory require("underscore"), require("backbone")
   else
     # Browser globals for the unenlightened...
     throw "Backbone must be loaded before backbone-chaining" unless window.Backbone? and Backbone.Model? and Backbone.Events?
@@ -27,6 +27,7 @@ http://github.com/ronen/backbone-chaining
           _.extend Backbone.Model::, Chaining.Model
           _.extend Backbone.Model::, Chaining.Events
           _.extend Backbone.Collection::, Chaining.Events
+          Chaining
 
       throwMalformed: (attr, msg) => throw "Backbone.Chaining: malformed chain '#{attr}': #{msg}"
       throwNullSet: (head, tail) => throw "Backbone.Chaining: can't set '#{head}.tail': no value for '#{head}'"
