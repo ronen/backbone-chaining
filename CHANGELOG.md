@@ -1,6 +1,10 @@
 # Backbone-Chaining
 ## Change Log
 
+### 0.1.5
+
+* Loosen backbone depednency
+
 ### 0.1.4
 
 * RequireJS and CommonJS compatibility.  Thanks to [@gdw2](http://github.com/gdw2)
