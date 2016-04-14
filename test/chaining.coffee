@@ -357,3 +357,40 @@ $(document).ready ->
         ctx2.ok = false
 
         models.b.trigger "sample" # only ctx1 callback
+
+    QUnit.test "listenTo chain", 2, ->
+        models.item0.listenTo models.a, "sample@chain.chain", ->
+            ok(true, "got sample@chain.chain")
+        models.c.trigger "sample"
+
+        models.item0.stopListening()
+        noEvents()
+
+    QUnit.test "listenTo chain stopListening to model", 2, ->
+        models.agent.listenTo models.a, "sample@chain.chain", ->
+            ok(true, "got sample@chain.chain")
+        models.c.trigger "sample" # handled
+        models.agent.stopListening models.a
+        models.c.trigger "sample" # not handled
+        noEvents()
+
+    QUnit.test "listenTo chain, stopListening to event", 2, ->
+        models.agent.listenTo models.a, "sample@chain.chain", ->
+            ok(true, "got sample@chain.chain")
+        models.c.trigger "sample" # handled
+
+        models.agent.stopListening models.a, "sample@chain.chain"
+        models.c.trigger "sample" # not handled
+
+        noEvents()
+
+    QUnit.test "listenTo chain stopListening to other event", 3, ->
+        models.agent.listenTo models.a, "sample@chain.chain", ->
+            ok(true, "got sample@chain.chain")
+        models.c.trigger "sample" # handled
+
+        models.agent.stopListening models.a, "other@chain.chain"
+        models.c.trigger "sample" # handled
+
+        models.agent.stopListening()
+        noEvents()

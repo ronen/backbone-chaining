@@ -152,19 +152,34 @@ http://github.com/ronen/backbone-chaining
       Events:
           _primitiveOn: Backbone.Events.on
           _primitiveOff: Backbone.Events.off
+          _primitiveListenTo: Backbone.Events.listenTo
 
-          on: (name, callback, context) ->
+          _dummyEvent: "__backbone_chaining_dummy__"
+
+          _setupChaining: (name, callback, context) ->
               if _.isString(name) && name.search(/\s/) == -1 && event = Chaining.parseEvent(name)
                   @_eventChainProxies ?= []
                   @_eventChainProxies.push new Chaining.EventChainProxy(@, event.name, event.attr, callback, context)
+                  return true
+              return false
+
+
+          on: (name, callback, context) ->
+              return if @_setupChaining name, callback, context
+              @_primitiveOn(arguments...)
+
+          listenTo: (obj, name, callback) ->
+              if obj._setupChaining name, callback, this
+                  @_primitiveListenTo(obj, @_dummyEvent, => )
                   return
 
-              @_primitiveOn(arguments...)
+              @_primitiveListenTo(obj, name, callback)
 
           off: (name, callback, context) ->
               if @_eventChainProxies && (!name || event = Chaining.parseEvent(name))
                   @_eventChainProxies = _.reject @_eventChainProxies, (eventChain) =>
                       if eventChain.match(@, event?.name, event?.attr, callback, context)
+                          @stopListening eventChain.requester, @_dummyEvent
                           eventChain.close()
                           true
                   delete @_eventChainProxies if @_eventChainProxies.length == 0
@@ -175,6 +190,7 @@ http://github.com/ronen/backbone-chaining
   class Backbone.Chaining.EventChainProxy
 
       _.extend @::, Backbone.Events
+      _.extend @::, Chaining.Events
 
       constructor: (@requester, @eventName, @attr, @callback, @context) ->
           @context ||= @requester
@@ -193,18 +209,19 @@ http://github.com/ronen/backbone-chaining
               @listenTo @requester, "add remove reset", @reset
               return
 
-          _.each Chaining.toArray(@requester.get(@attr)), (remote) =>
-              if remote && _.isFunction(remote.on)
-                  @listenTo remote, @eventName, (args...) => @callback.apply @context, args
+          if _.isFunction @requester.get
+            _.each Chaining.toArray(@requester.get(@attr)), (remote) =>
+                if remote && _.isFunction(remote.on)
+                    @listenTo remote, @eventName, (args...) => @callback.apply @context, args
 
-          # watch chain for updates
-          @walkBack @attr, (watch, residue) =>
-              updateEvent = if residue.index then "add remove reset sort" else "change:#{residue.tail}"
-              _.each Chaining.toArray(@requester.get(watch)), (container) =>
-                  if container
-                      @listenTo container, updateEvent, @reset
-          @updateEvent = "change:#{Chaining.parseChain(@attr)?.head || @attr}"
-          @listenTo @requester, @updateEvent, @reset, @ # use primitiveOn to avoid infinite recursion
+            # watch chain for updates
+            @walkBack @attr, (watch, residue) =>
+                updateEvent = if residue.index then "add remove reset sort" else "change:#{residue.tail}"
+                _.each Chaining.toArray(@requester.get(watch)), (container) =>
+                    if container
+                        @listenTo container, updateEvent, @reset
+            @updateEvent = "change:#{Chaining.parseChain(@attr)?.head || @attr}"
+            @listenTo @requester, @updateEvent, @reset, @ # use primitiveOn to avoid infinite recursion
 
       walkBack: (attr, func) ->
           while true
