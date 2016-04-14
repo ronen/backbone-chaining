@@ -214,13 +214,18 @@ Backbone-Chaining avoids that ambiguity, by using `@` to separate the name of th
 
 Suggestions welcome, especially PR's with tests :)
 
-The test rig runs the full test suite for Underscore and LoDash, and does quick sanity checks that backbone-chaining properly loads under RequireJS and CommonJS.  To run the tests:
+To develop and test:
 
     $ npm install
-    $ npm test     # => runs all 4 tests.  or you can run them individually...
+    $ coffee -c -w **/*.coffee  # in some other shell    
+
+    $ npm test     # => runs all 4 test suites.  or you can run them individually...
     $ npm run test-underscore 
     $ npm run test-lodash
     $ npm run test-requirejs
     $ npm run test-commonjs
 
-The full test suite includes a copy of backbone's test suite, to ensure that backbone-chaining doesn't break anything in backbone.  (As of this writing, the test suite is copied from backbone 1.3.3)
+The test first two tests include the full test suite for backbone-chaining and also a copy of backbone's test suite, to ensure that backbone-chaining doesn't break anything in backbone.  They are tested against underscore and lodash.
+
+The last two test suites do quick sanity checks that backbone-chaining properly loads under RequireJS and CommonJS.
+
