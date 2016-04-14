@@ -1,6 +1,10 @@
 # Backbone-Chaining
 ## Change Log
 
+### 0.1.6
+
+* Get working with backbone 1.2+
+
 ### 0.1.5
 
 * Loosen backbone depednency
