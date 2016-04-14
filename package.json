@@ -13,8 +13,9 @@
     "devDependencies":{
         "jquery":"<2.0.0",
         "lodash":">=2.4.1",
-        "phantomjs":">=1.9.0",
-        "qunitjs":"=1.11.0",
+        "phantomjs":"^2.1.1",
+        "qunit-phantomjs-runner":"^2.2.0",
+        "qunitjs":"^1.23.1",
         "requirejs":">=2.1.14",
         "underscore":">=1.6.0"
     },
@@ -31,9 +32,9 @@
         ]
     },
     "scripts":{
-        "test": "npm run test-underscore && npm run test-lodash && npm run test-requirejs && npm run test-commonjs",
-        "test-underscore":"phantomjs test/lib/runner-qunit.js test/test-suite-underscore.html?noglobals=true",
-        "test-lodash":"phantomjs test/lib/runner-qunit.js test/test-suite-lodash.html?noglobals=true",
+        "test":"npm run test-underscore && npm run test-lodash && npm run test-requirejs && npm run test-commonjs",
+        "test-underscore":"phantomjs node_modules/qunit-phantomjs-runner/runner.js test/test-suite-underscore.html",
+        "test-lodash":"phantomjs node_modules/qunit-phantomjs-runner/runner.js test/test-suite-lodash.html",
         "test-requirejs":"phantomjs test/lib/runner-plain.js test/test-sanity-requirejs.html",
         "test-commonjs":"phantomjs test/test-sanity-commonjs.js"
     },
