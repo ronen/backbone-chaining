@@ -26,7 +26,7 @@ $(document).ready ->
         options.model.off options.event
         noEvents()
 
-    module "Backbone.Chaining",
+    QUnit.module "Backbone.Chaining",
         setup: ->
             models.a = new Backbone.Model name: "a"
             models.b = new Backbone.Model name: "b"
@@ -35,6 +35,7 @@ $(document).ready ->
             models.item1 = new Backbone.Model name: "item1"
             models.sub0 = new Backbone.Model name: "sub0"
             models.sub1 = new Backbone.Model name: "sub1"
+            models.agent = new Backbone.Model name: "agent"
 
             collections.p = new Backbone.Collection [models.item0, models.item1]
 
@@ -44,106 +45,106 @@ $(document).ready ->
             models.item1.set 'sub', models.sub1
             models.a.set 'coll', collections.p
 
-    test "get with null attribute", ->
+    QUnit.test "get with null attribute", ->
         equal models.a.get(null), null
 
-    test "get without chain", 1, ->
+    QUnit.test "get without chain", 1, ->
         equal models.a.get('name'), 'a'
 
-    test "get malformed chain -- missing tail", 1, ->
+    QUnit.test "get malformed chain -- missing tail", 1, ->
         throws (-> models.a.get 'chain.'), /malformed chain/
 
-    test "get malformed chain -- unbalanced left bracket", 1, ->
+    QUnit.test "get malformed chain -- unbalanced left bracket", 1, ->
         throws (-> models.a.get 'chain]here'), /malformed chain/
 
-    test "get malformed chain -- unbalanced bracket", 1, ->
+    QUnit.test "get malformed chain -- unbalanced bracket", 1, ->
         throws (-> models.a.get 'chain[here'), /malformed chain/
 
-    test "get malformed chain -- missing dot", 1, ->
+    QUnit.test "get malformed chain -- missing dot", 1, ->
         throws (-> models.a.get 'chain[2]x'), /malformed chain/
 
-    test "get malformed chain -- missing tail after bracket", 1, ->
+    QUnit.test "get malformed chain -- missing tail after bracket", 1, ->
         throws (-> models.a.get 'chain[2].'), /malformed chain/
 
-    test "get single chain", 1, ->
+    QUnit.test "get single chain", 1, ->
         equal models.a.get('chain.name'), 'b'
 
-    test "get double chain", 1, ->
+    QUnit.test "get double chain", 1, ->
         equal models.a.get('chain.chain.name'), 'c'
 
-    test "get chain with collection index", 3, ->
+    QUnit.test "get chain with collection index", 3, ->
         equal models.a.get('coll[0]'), models.item0, "index 0"
         equal models.a.get('coll[1]'), models.item1, "index 1"
         equal models.a.get('coll[#]'), models.item1, "index 1"
 
-    test "get chain with collection index chain", 3, ->
+    QUnit.test "get chain with collection index chain", 3, ->
         equal models.a.get('coll[0].sub.name'), 'sub0', "index 0"
         equal models.a.get('coll[1].sub.name'), 'sub1', "index 1"
         equal models.a.get('coll[#].sub.name'), 'sub1', "index 1"
 
-    test "get chain with collection star", 1, ->
+    QUnit.test "get chain with collection star", 1, ->
         deepEqual models.a.get('coll[*]'), [models.item0, models.item1]
 
-    test "get chain with collection star chained", 1, ->
+    QUnit.test "get chain with collection star chained", 1, ->
         deepEqual models.a.get('coll[*].sub.name'), ['sub0', 'sub1']
 
-    test "get broken single chain", 1, ->
+    QUnit.test "get broken single chain", 1, ->
         models.a.set 'chain', null
         equal models.a.get('chain.name'), undefined
 
-    test "get broken double chain", 1, ->
+    QUnit.test "get broken double chain", 1, ->
         models.b.set 'chain', null
         equal models.a.get('chain.chain.name'), undefined
 
-    test "get broken collection index chain", 1, ->
+    QUnit.test "get broken collection index chain", 1, ->
         models.a.set 'coll', null
         equal models.a.get('coll[0].sub.name'), undefined
 
-    test "get invalid collection index chain", 1, ->
+    QUnit.test "get invalid collection index chain", 1, ->
         equal models.a.get('coll[2].sub.name'), undefined
 
-    test "set without chain", 1, ->
+    QUnit.test "set without chain", 1, ->
         models.a.set 'attr', 'val'
         equal models.a.get('attr'), 'val'
 
-    test "set malformed chain -- no attribute", 1, ->
+    QUnit.test "set malformed chain -- no attribute", 1, ->
         throws (-> models.a.set 'chain.', 'val'), /malformed chain/
 
-    test "set single chain", 1, ->
+    QUnit.test "set single chain", 1, ->
         models.a.set 'chain.attr', 'val'
         equal models.b.get('attr'), 'val'
 
-    test "set double chain", 1, ->
+    QUnit.test "set double chain", 1, ->
         models.a.set 'chain.chain.attr', 'val'
         equal models.c.get('attr'), 'val'
 
-    test "set chain with collection index", 1, ->
+    QUnit.test "set chain with collection index", 1, ->
         models.a.set 'coll[0].sub.attr', 'val'
         equal models.sub0.get('attr'), 'val'
 
-    test "set chain with collection last index", 1, ->
+    QUnit.test "set chain with collection last index", 1, ->
         models.a.set 'coll[#].sub.attr', 'val'
         equal models.sub1.get('attr'), 'val'
 
-    test "set chain with collection star", 2, ->
+    QUnit.test "set chain with collection star", 2, ->
         models.a.set 'coll[*].sub.attr', 'val'
         equal models.sub0.get('attr'), 'val'
         equal models.sub1.get('attr'), 'val'
 
-    test "event malformed chain -- missing attr", 1, ->
+    QUnit.test "event malformed chain -- missing attr", 1, ->
         throws (-> models.a.on "name@"), /malformed chain/
 
-    test "event malformed chain -- too many atsigns", 1, ->
+    QUnit.test "event malformed chain -- too many atsigns", 1, ->
         throws (-> models.a.on "name@here@there"), /malformed chain/
 
-    test "event without chain", 2, ->
+    QUnit.test "event without chain", 2, ->
         testEvent
             model: models.a
             event: "sample"
             handler: -> ok(true, "got sample")
             trigger: -> models.a.trigger "sample"
 
-    test "event chain", 3, ->
+    QUnit.test "event chain", 3, ->
         testEvent
             model: models.a
             event: "sample@chain"
@@ -152,7 +153,7 @@ $(document).ready ->
                 equal @, models.a
             trigger: -> models.b.trigger "sample"
 
-    test "event chain context", 2, ->
+    QUnit.test "event chain context", 2, ->
         testEvent
             model: models.a
             context: {ctx: "test"}
@@ -161,14 +162,14 @@ $(document).ready ->
             trigger: -> models.b.trigger "sample"
 
 
-    test "event double chain", 2, ->
+    QUnit.test "event double chain", 2, ->
         testEvent
             model: models.a
             event: "sample@chain.chain"
             handler: -> ok(true, "got sample@chain@chain")
             trigger: -> models.c.trigger "sample"
 
-    test "event chain with collection index", 2, ->
+    QUnit.test "event chain with collection index", 2, ->
         testEvent
             model: models.a
             event: "sample@coll[0].sub"
@@ -177,7 +178,7 @@ $(document).ready ->
                 models.sub0.trigger "sample", "yes"
                 models.sub1.trigger "sample", "no"
 
-    test "event chain with collection index", 2, ->
+    QUnit.test "event chain with collection index", 2, ->
         testEvent
             model: models.a
             event: "sample@coll[#].sub"
@@ -186,7 +187,7 @@ $(document).ready ->
                 models.sub0.trigger "sample", "no"
                 models.sub1.trigger "sample", "yes"
 
-    test "event chain with collection star", 3, ->
+    QUnit.test "event chain with collection star", 3, ->
         testEvent
             model: models.a
             event: "sample@coll[*].sub"
@@ -195,7 +196,7 @@ $(document).ready ->
                 models.sub0.trigger "sample", "yes"
                 models.sub1.trigger "sample", "yes"
 
-    test "event pass-through collection", 3, ->
+    QUnit.test "event pass-through collection", 3, ->
         container = new Backbone.Collection [models.a]
         testEvent
             model: container
@@ -207,7 +208,7 @@ $(document).ready ->
                 models.a.get('coll').add new Backbone.Model name: "added"
 
 
-    test "change event chain", 4, ->
+    QUnit.test "change event chain", 4, ->
         models.b.set 'attr', 'previous'
         testEvent
             model: models.a
@@ -218,7 +219,7 @@ $(document).ready ->
                 equal(model.get('attr'), 'new')
             trigger: -> models.b.set 'attr', 'new'
 
-    test "change:attr event chain", 5, ->
+    QUnit.test "change:attr event chain", 5, ->
         models.b.set 'attr', 'previous'
         testEvent
             model: models.a
@@ -230,7 +231,7 @@ $(document).ready ->
                 equal model.get('attr'), 'new'
             trigger: -> models.b.set 'attr', 'new'
 
-    test "change:attr event double chain", 5, ->
+    QUnit.test "change:attr event double chain", 5, ->
         models.c.set 'attr', 'previous'
         testEvent
             model: models.a
@@ -242,7 +243,7 @@ $(document).ready ->
                 equal(model.get('attr'), 'new')
             trigger: -> models.c.set 'attr', 'new'
 
-    test "change:attr event double chain", 5, ->
+    QUnit.test "change:attr event double chain", 5, ->
         models.c.set 'attr', 'previous'
         testEvent
             model: models.a
@@ -254,7 +255,7 @@ $(document).ready ->
                 equal(model.get('attr'), 'new')
             trigger: -> models.c.set 'attr', 'new'
 
-    test "update event chain -- break chain", 4, ->
+    QUnit.test "update event chain -- break chain", 4, ->
         testEvent
             model: models.a
             event: "sample@coll[*].sub"
@@ -264,7 +265,7 @@ $(document).ready ->
                 models.sub0.trigger "sample"
                 models.sub1.trigger "sample"
 
-    test "update event chain -- remove from collection", 4, ->
+    QUnit.test "update event chain -- remove from collection", 4, ->
         testEvent
             model: models.a
             event: "sample@coll[*].sub"
@@ -274,18 +275,18 @@ $(document).ready ->
                 models.sub0.trigger "sample"
                 models.sub1.trigger "sample"
 
-    test "update event chain -- make chain: add field", 1, ->
+    QUnit.test "update event chain -- make chain: add field", 1, ->
         models.a.on "sample@coll[*].sub.extra.chain", -> ok(true, "got sample@coll[*].sub.extra.chain")
         models.sub1.set 'extra', models.b
         models.c.trigger "sample"
 
-    test "update event chain -- make chain: add element", 1, ->
+    QUnit.test "update event chain -- make chain: add element", 1, ->
         models.a.on "sample@coll[2].sub", -> ok(true, "got sample@coll[*].sub.extra.chain")
         sub2 = new Backbone.Model name: "sub2"
         collections.p.add new Backbone.Model name: "item2", sub: sub2
         sub2.trigger "sample"
 
-    test "update event chain -- change root", 2, ->
+    QUnit.test "update event chain -- change root", 2, ->
         newTail = new Backbone.Model name: "newTail"
         newHead = new Backbone.Model name: "newHead", chain: newTail
         models.a.on "sample@chain.chain", (expected) -> equal expected, 'yes'
@@ -299,7 +300,7 @@ $(document).ready ->
         newHead.trigger "sample", "no"
         newTail.trigger "sample", "yes"
 
-    test "remove chain -- event name", 3, ->
+    QUnit.test "remove chain -- event name", 3, ->
         cb = (expected) -> equal expected, 'yes'
         models.a.on "event1@chain", cb
         models.a.on "event2@chain", cb
@@ -312,7 +313,7 @@ $(document).ready ->
         models.b.trigger "event1", "no"
         models.b.trigger "event2", "yes"
 
-    test "remove chain -- attr", 3, ->
+    QUnit.test "remove chain -- attr", 3, ->
         cb = (expected) -> equal expected, 'yes'
         models.a.on "sample@chain", cb
         models.a.on "sample@coll", cb
@@ -325,7 +326,7 @@ $(document).ready ->
         models.b.trigger "sample",      "no"
         collections.p.trigger "sample", "yes"
 
-    test "remove chain -- callback", 3, ->
+    QUnit.test "remove chain -- callback", 3, ->
         cb1 = (expected) -> ok(true)
 
         cb2ok = true
@@ -341,7 +342,7 @@ $(document).ready ->
 
         models.b.trigger "sample" # only cb1
 
-    test "remove chain -- context", 3, ->
+    QUnit.test "remove chain -- context", 3, ->
         ctx1 = { ok: true }
         ctx2 = { ok: true}
 
