@@ -1,6 +1,10 @@
 # Backbone-Chaining
 ## Change Log
 
+### 0.2.0
+
+* Event chaining now works with any object that extends from Backbone.Events, not just Models or Collections
+
 ### 0.1.6
 
 * Get working with backbone 1.2+
