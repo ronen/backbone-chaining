@@ -9,9 +9,12 @@ $(document).ready ->
 
     window.models = models = {}
     collections = {}
+    genericListener = new class
+        _.extend @::, Backbone.Events
+
 
     noEvents = ->
-        ok(_.all(_.toArray(models).concat _.toArray(collections), (sender) ->
+        ok(_.all(_.toArray(models).concat _.toArray(collections).concat _.toArray(genericListener), (sender) ->
             return false if sender._eventChains
             return false unless _.isEmpty(_.omit(sender._events, 'all')) # ignore 'all' events, created by collection
             true
@@ -366,6 +369,14 @@ $(document).ready ->
         models.item0.stopListening()
         noEvents()
 
+    QUnit.test "generic listener object listenTo", 2, ->
+        genericListener.listenTo models.a, "sample@chain.chain", ->
+            ok(true, "got sample@chain.chain")
+        models.c.trigger "sample"
+
+        genericListener.stopListening()
+        noEvents()
+
     QUnit.test "listenTo chain stopListening to model", 2, ->
         models.agent.listenTo models.a, "sample@chain.chain", ->
             ok(true, "got sample@chain.chain")
@@ -394,3 +405,5 @@ $(document).ready ->
 
         models.agent.stopListening()
         noEvents()
+
+

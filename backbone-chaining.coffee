@@ -24,9 +24,16 @@ http://github.com/ronen/backbone-chaining
   Chaining = Backbone.Chaining =
 
       install: =>
+          # install set/get chaining to Backbone.Model
           _.extend Backbone.Model::, Chaining.Model
+
+          # install event chaining to Backbone.Events and backbone objects that
+          # have extended from it
+          _.extend Backbone, Chaining.Events
+          _.extend Backbone.Events, Chaining.Events
           _.extend Backbone.Model::, Chaining.Events
           _.extend Backbone.Collection::, Chaining.Events
+
           Chaining
 
       throwMalformed: (attr, msg) => throw "Backbone.Chaining: malformed chain '#{attr}': #{msg}"
