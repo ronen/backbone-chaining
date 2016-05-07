@@ -1,6 +1,10 @@
 # Backbone-Chaining
 ## Change Log
 
+### 0.2.1
+
+* Bug fix: Include also backbone's own other objects that extend from Backbone Events (Views, Routers, History)
+
 ### 0.2.0
 
 * Event chaining now works with any object that extends from Backbone.Events, not just Models or Collections
