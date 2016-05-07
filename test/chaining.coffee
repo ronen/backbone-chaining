@@ -9,12 +9,10 @@ $(document).ready ->
 
     window.models = models = {}
     collections = {}
-    genericListener = new class
-        _.extend @::, Backbone.Events
 
 
-    noEvents = ->
-        ok(_.all(_.toArray(models).concat _.toArray(collections).concat _.toArray(genericListener), (sender) ->
+    noEvents = (other) ->
+        ok(_.all(_.compact _.flatten([models, collections, other]), (sender) ->
             return false if sender._eventChains
             return false unless _.isEmpty(_.omit(sender._events, 'all')) # ignore 'all' events, created by collection
             true
@@ -361,21 +359,33 @@ $(document).ready ->
 
         models.b.trigger "sample" # only ctx1 callback
 
+    listenToChain = (listener) ->
+        listener.listenTo models.a, "sample@chain.chain", ->
+            ok(true, "got sample@chain.chain")
+        models.c.trigger "sample"
+
+        listener.stopListening()
+        noEvents(listener)
+
     QUnit.test "listenTo chain", 2, ->
-        models.item0.listenTo models.a, "sample@chain.chain", ->
-            ok(true, "got sample@chain.chain")
-        models.c.trigger "sample"
+        listenToChain models.item0
 
-        models.item0.stopListening()
-        noEvents()
+    QUnit.test "backbone listenTo chain", 2, ->
+        listenToChain Backbone
 
-    QUnit.test "generic listener object listenTo", 2, ->
-        genericListener.listenTo models.a, "sample@chain.chain", ->
-            ok(true, "got sample@chain.chain")
-        models.c.trigger "sample"
+    QUnit.test "generic listener listenTo", 2, ->
+        listenToChain new class
+            _.extend @::, Backbone.Events
 
-        genericListener.stopListening()
-        noEvents()
+    _.each {
+        model:      Backbone.Model
+        collection: Backbone.Collection
+        view:       Backbone.View
+        router:     Backbone.Router
+        history:    Backbone.History
+    }, (klass, name) ->
+        QUnit.test "#{name} listenTo chain", 2, ->
+            listenToChain new klass
 
     QUnit.test "listenTo chain stopListening to model", 2, ->
         models.agent.listenTo models.a, "sample@chain.chain", ->

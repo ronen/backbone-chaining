@@ -30,8 +30,11 @@ http://github.com/ronen/backbone-chaining
           _.extend(Backbone.Model.prototype, Chaining.Model);
           _.extend(Backbone, Chaining.Events);
           _.extend(Backbone.Events, Chaining.Events);
-          _.extend(Backbone.Model.prototype, Chaining.Events);
           _.extend(Backbone.Collection.prototype, Chaining.Events);
+          _.extend(Backbone.History.prototype, Chaining.Events);
+          _.extend(Backbone.Model.prototype, Chaining.Events);
+          _.extend(Backbone.Router.prototype, Chaining.Events);
+          _.extend(Backbone.View.prototype, Chaining.Events);
           return Chaining;
         };
       })(this),

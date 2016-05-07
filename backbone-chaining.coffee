@@ -27,12 +27,15 @@ http://github.com/ronen/backbone-chaining
           # install set/get chaining to Backbone.Model
           _.extend Backbone.Model::, Chaining.Model
 
-          # install event chaining to Backbone.Events and backbone objects that
-          # have extended from it
-          _.extend Backbone, Chaining.Events
-          _.extend Backbone.Events, Chaining.Events
-          _.extend Backbone.Model::, Chaining.Events
+          # install event chaining to Backbone.Events and all Backbone
+          # objects that have extended from it
+          _.extend Backbone,              Chaining.Events
+          _.extend Backbone.Events,       Chaining.Events
           _.extend Backbone.Collection::, Chaining.Events
+          _.extend Backbone.History::,    Chaining.Events
+          _.extend Backbone.Model::,      Chaining.Events
+          _.extend Backbone.Router::,     Chaining.Events
+          _.extend Backbone.View::,       Chaining.Events
 
           Chaining
 
