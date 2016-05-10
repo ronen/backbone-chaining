@@ -38,7 +38,7 @@
         "test-commonjs":"phantomjs test/test-sanity-commonjs.js"
     },
     "main":"backbone-chaining.js",
-    "version":"0.2.1",
+    "version":"0.3.0",
     "repository":"git://github.com/ronen/backbone-chaining.git",
     "licenses":[
         {

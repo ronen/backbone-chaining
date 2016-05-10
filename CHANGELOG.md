@@ -1,6 +1,10 @@
 # Backbone-Chaining
 ## Change Log
 
+### 0.3.0
+
+* Now supports event maps
+
 ### 0.2.1
 
 * Bug fix: Include also backbone's own other objects that extend from Backbone Events (Views, Routers, History)
