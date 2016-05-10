@@ -166,36 +166,59 @@ http://github.com/ronen/backbone-chaining
 
           _dummyEvent: "__backbone_chaining_dummy__"
 
-          _setupChaining: (name, callback, context) ->
-              if _.isString(name) && name.search(/\s/) == -1 && event = Chaining.parseEvent(name)
-                  @_eventChainProxies ?= []
-                  @_eventChainProxies.push new Chaining.EventChainProxy(@, event.name, event.attr, callback, context)
-                  return true
-              return false
+          _splitEvents: (names) ->
+              return [null, names] if !_.isString names
+
+              primitives = []
+              chainEvents = []
+              _.each names.split(/\s+/), (name) ->
+                if event = Chaining.parseEvent name
+                    chainEvents.push event
+                else
+                    primitives.push name
+              return [chainEvents, if primitives then primitives.join(' ') else undefined]
 
 
-          on: (name, callback, context) ->
-              return if @_setupChaining name, callback, context
-              @_primitiveOn(arguments...)
+          _addEventChainProxy: (event, callback, context) ->
+              @_eventChainProxies ?= []
+              @_eventChainProxies.push new Chaining.EventChainProxy(@, event.name, event.attr, callback, context)
 
-          listenTo: (obj, name, callback) ->
-              if obj._setupChaining name, callback, this
+          _removeEventChainProxy: (event, callback, context) ->
+                @_eventChainProxies = _.reject @_eventChainProxies, (eventChain) =>
+                    if eventChain.match(@, event?.name, event?.attr, callback, context)
+                        @stopListening eventChain.requester, @_dummyEvent
+                        eventChain.close()
+                        true
+                delete @_eventChainProxies if @_eventChainProxies.length == 0
+
+          _setupChaining: (names, callback, context, chainedCB) ->
+              [chainEvents, primitives] = @_splitEvents(names)
+
+              _.each chainEvents, (event) => @_addEventChainProxy event, callback, context
+
+              chainedCB() if chainEvents?.length > 0 and _.isFunction chainedCB
+
+              return primitives
+
+
+          on: (names, callback, context) ->
+              primitives = @_setupChaining names, callback, context
+              @_primitiveOn(primitives, callback, context) if primitives
+
+          listenTo: (obj, names, callback) ->
+              primitives = obj._setupChaining names, callback, this, =>
                   @_primitiveListenTo(obj, @_dummyEvent, => )
-                  return
 
-              @_primitiveListenTo(obj, name, callback)
+              @_primitiveListenTo(obj, primitives, callback) if primitives
 
-          off: (name, callback, context) ->
-              if @_eventChainProxies && (!name || event = Chaining.parseEvent(name))
-                  @_eventChainProxies = _.reject @_eventChainProxies, (eventChain) =>
-                      if eventChain.match(@, event?.name, event?.attr, callback, context)
-                          @stopListening eventChain.requester, @_dummyEvent
-                          eventChain.close()
-                          true
-                  delete @_eventChainProxies if @_eventChainProxies.length == 0
-                  return if name
+          off: (names, callback, context) ->
+              [chainEvents, primitives] = @_splitEvents names if names
 
-              @_primitiveOff(arguments...)
+              if @_eventChainProxies && (chainEvents || !names)
+                  _.each chainEvents, (event) => @_removeEventChainProxy(event, callback, context)
+                  @_removeEventChainProxy(null, callback, context) if !names
+
+              @_primitiveOff(primitives, callback, context)
 
   class Backbone.Chaining.EventChainProxy
 

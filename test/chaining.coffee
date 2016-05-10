@@ -170,6 +170,16 @@ $(document).ready ->
             handler: -> ok(true, "got sample@chain@chain")
             trigger: -> models.c.trigger "sample"
 
+    QUnit.test "mix chains and nonchain", 4, ->
+        testEvent
+            model: models.a
+            event: "nonchain single@chain double@chain.chain"
+            handler: -> ok(true, "got event")
+            trigger: ->
+                models.a.trigger "nonchain"
+                models.b.trigger "single"
+                models.c.trigger "double"
+
     QUnit.test "event chain with collection index", 2, ->
         testEvent
             model: models.a
@@ -359,16 +369,21 @@ $(document).ready ->
 
         models.b.trigger "sample" # only ctx1 callback
 
-    listenToChain = (listener) ->
-        listener.listenTo models.a, "sample@chain.chain", ->
+    listenToChain = (listener, events=["sample"]) ->
+        chainedEvents = _.map(events, (evt) -> "#{evt}@chain.chain").join(' ')
+        listener.listenTo models.a, chainedEvents, ->
             ok(true, "got sample@chain.chain")
-        models.c.trigger "sample"
+        _.each events, (evt) ->
+            models.c.trigger evt
 
         listener.stopListening()
         noEvents(listener)
 
     QUnit.test "listenTo chain", 2, ->
         listenToChain models.item0
+
+    QUnit.test "listenTo multiple events", 4, ->
+        listenToChain models.item0, ["first", "second", "third"]
 
     QUnit.test "backbone listenTo chain", 2, ->
         listenToChain Backbone

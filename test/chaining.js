@@ -227,6 +227,20 @@
         }
       });
     });
+    QUnit.test("mix chains and nonchain", 4, function() {
+      return testEvent({
+        model: models.a,
+        event: "nonchain single@chain double@chain.chain",
+        handler: function() {
+          return ok(true, "got event");
+        },
+        trigger: function() {
+          models.a.trigger("nonchain");
+          models.b.trigger("single");
+          return models.c.trigger("double");
+        }
+      });
+    });
     QUnit.test("event chain with collection index", 2, function() {
       return testEvent({
         model: models.a,
@@ -481,16 +495,28 @@
       ctx2.ok = false;
       return models.b.trigger("sample");
     });
-    listenToChain = function(listener) {
-      listener.listenTo(models.a, "sample@chain.chain", function() {
+    listenToChain = function(listener, events) {
+      var chainedEvents;
+      if (events == null) {
+        events = ["sample"];
+      }
+      chainedEvents = _.map(events, function(evt) {
+        return evt + "@chain.chain";
+      }).join(' ');
+      listener.listenTo(models.a, chainedEvents, function() {
         return ok(true, "got sample@chain.chain");
       });
-      models.c.trigger("sample");
+      _.each(events, function(evt) {
+        return models.c.trigger(evt);
+      });
       listener.stopListening();
       return noEvents(listener);
     };
     QUnit.test("listenTo chain", 2, function() {
       return listenToChain(models.item0);
+    });
+    QUnit.test("listenTo multiple events", 4, function() {
+      return listenToChain(models.item0, ["first", "second", "third"]);
     });
     QUnit.test("backbone listenTo chain", 2, function() {
       return listenToChain(Backbone);
