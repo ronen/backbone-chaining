@@ -180,6 +180,18 @@ $(document).ready ->
                 models.b.trigger "single"
                 models.c.trigger "double"
 
+    QUnit.test "event map", 4, ->
+        testEvent
+            model: models.a
+            event:
+                nonchain: -> ok(true, "got nonchain event")
+                "single@chain": -> ok(true, "got single event")
+                "double@chain.chain": -> ok(true, "got double event")
+            trigger: ->
+                models.a.trigger "nonchain"
+                models.b.trigger "single"
+                models.c.trigger "double"
+
     QUnit.test "event chain with collection index", 2, ->
         testEvent
             model: models.a

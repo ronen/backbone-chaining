@@ -213,33 +213,39 @@ http://github.com/ronen/backbone-chaining
         _primitiveOff: Backbone.Events.off,
         _primitiveListenTo: Backbone.Events.listenTo,
         _dummyEvent: "__backbone_chaining_dummy__",
-        _splitEvents: function(names) {
+        _splitEvents: function(events, callback, context) {
           var chainEvents, primitives;
-          if (!_.isString(names)) {
-            return [null, names];
+          if (_.isString(events)) {
+            events = events.split(/\s+/);
+            events = _.object(events, _.times(events.length, function() {
+              return callback;
+            }));
+          } else {
+            context = callback;
           }
-          primitives = [];
           chainEvents = [];
-          _.each(names.split(/\s+/), function(name) {
-            var event;
-            if (event = Chaining.parseEvent(name)) {
-              return chainEvents.push(event);
+          primitives = {};
+          _.each(events, function(callback, name) {
+            var chainEvent;
+            if (chainEvent = Chaining.parseEvent(name)) {
+              chainEvent.callback = callback;
+              return chainEvents.push(chainEvent);
             } else {
-              return primitives.push(name);
+              return primitives[name] = callback;
             }
           });
-          return [chainEvents, primitives ? primitives.join(' ') : void 0];
+          return [chainEvents, primitives, context];
         },
-        _addEventChainProxy: function(event, callback, context) {
+        _addEventChainProxy: function(event, context) {
           if (this._eventChainProxies == null) {
             this._eventChainProxies = [];
           }
-          return this._eventChainProxies.push(new Chaining.EventChainProxy(this, event.name, event.attr, callback, context));
+          return this._eventChainProxies.push(new Chaining.EventChainProxy(this, event.name, event.attr, event.callback, context));
         },
-        _removeEventChainProxy: function(event, callback, context) {
+        _removeEventChainProxy: function(event, context) {
           this._eventChainProxies = _.reject(this._eventChainProxies, (function(_this) {
             return function(eventChain) {
-              if (eventChain.match(_this, event != null ? event.name : void 0, event != null ? event.attr : void 0, callback, context)) {
+              if (eventChain.match(_this, event != null ? event.name : void 0, event != null ? event.attr : void 0, event != null ? event.callback : void 0, context)) {
                 _this.stopListening(eventChain.requester, _this._dummyEvent);
                 eventChain.close();
                 return true;
@@ -252,48 +258,44 @@ http://github.com/ronen/backbone-chaining
         },
         _setupChaining: function(names, callback, context, chainedCB) {
           var chainEvents, primitives, _ref;
-          _ref = this._splitEvents(names), chainEvents = _ref[0], primitives = _ref[1];
+          _ref = this._splitEvents(names, callback, context), chainEvents = _ref[0], primitives = _ref[1], context = _ref[2];
           _.each(chainEvents, (function(_this) {
             return function(event) {
-              return _this._addEventChainProxy(event, callback, context);
+              return _this._addEventChainProxy(event, context);
             };
           })(this));
           if ((chainEvents != null ? chainEvents.length : void 0) > 0 && _.isFunction(chainedCB)) {
             chainedCB();
           }
-          return primitives;
+          return [primitives, context];
         },
         on: function(names, callback, context) {
-          var primitives;
-          primitives = this._setupChaining(names, callback, context);
-          if (primitives) {
-            return this._primitiveOn(primitives, callback, context);
-          }
+          var primitives, _ref;
+          _ref = this._setupChaining(names, callback, context), primitives = _ref[0], context = _ref[1];
+          return this._primitiveOn(primitives, callback, context);
         },
         listenTo: function(obj, names, callback) {
-          var primitives;
-          primitives = obj._setupChaining(names, callback, this, (function(_this) {
+          var context, primitives, _ref;
+          _ref = obj._setupChaining(names, callback, this, (function(_this) {
             return function() {
               return _this._primitiveListenTo(obj, _this._dummyEvent, function() {});
             };
-          })(this));
-          if (primitives) {
-            return this._primitiveListenTo(obj, primitives, callback);
-          }
+          })(this)), primitives = _ref[0], context = _ref[1];
+          return this._primitiveListenTo(obj, primitives, callback);
         },
         off: function(names, callback, context) {
           var chainEvents, primitives, _ref;
           if (names) {
-            _ref = this._splitEvents(names), chainEvents = _ref[0], primitives = _ref[1];
+            _ref = this._splitEvents(names, callback, context), chainEvents = _ref[0], primitives = _ref[1], context = _ref[2];
           }
           if (this._eventChainProxies && (chainEvents || !names)) {
             _.each(chainEvents, (function(_this) {
               return function(event) {
-                return _this._removeEventChainProxy(event, callback, context);
+                return _this._removeEventChainProxy(event, context);
               };
             })(this));
             if (!names) {
-              this._removeEventChainProxy(null, callback, context);
+              this._removeEventChainProxy(null, context);
             }
           }
           return this._primitiveOff(primitives, callback, context);

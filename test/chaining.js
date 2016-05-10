@@ -241,6 +241,27 @@
         }
       });
     });
+    QUnit.test("event map", 4, function() {
+      return testEvent({
+        model: models.a,
+        event: {
+          nonchain: function() {
+            return ok(true, "got nonchain event");
+          },
+          "single@chain": function() {
+            return ok(true, "got single event");
+          },
+          "double@chain.chain": function() {
+            return ok(true, "got double event");
+          }
+        },
+        trigger: function() {
+          models.a.trigger("nonchain");
+          models.b.trigger("single");
+          return models.c.trigger("double");
+        }
+      });
+    });
     QUnit.test("event chain with collection index", 2, function() {
       return testEvent({
         model: models.a,
